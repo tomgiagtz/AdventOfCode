@@ -1,2 +1,3 @@
 # AdventOfCode
-https://adventofcode.com's annual code advent calendar
+My repo for solutions to the annual code advent calendar
+https://adventofcode.com
