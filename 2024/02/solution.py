@@ -1,6 +1,21 @@
 from operator import contains
 import os
 
+
+class ReportInfo:
+    levels = []
+    deltas = []
+    isSafeDeltas = []
+    numSafe = 0
+    numNotSafe = 0
+
+    def __repr__(self):
+        return (f"\nSafe: {self.numSafe}, Not Safe: {self.numNotSafe}\n"
+                f"Levels: {self.levels}\n"
+                f"Deltas: {self.deltas}\n"
+                f"Is Safe Deltas: {self.isSafeDeltas}")
+
+
 def read_input():
     input_file = os.path.join(os.path.dirname(__file__), 'input')
     try:
@@ -10,6 +25,7 @@ def read_input():
         print(f"The file {input_file} was not found.")
         return None
 
+
 def main():
     print("Hello, World!")
     # part 1
@@ -18,41 +34,67 @@ def main():
 
     numSafe = 0
     numAlmostSafe = 0
+
+    # list of Dampenable Reports
+    unsafeReports = []
+    unsafeReportDeltas = []
     for i in range(len(reports)):
+        # for each report
+        reportInfo = ReportInfo()
 
-        reports[i] = reports[i].split(" ")
+        # split each line into an array
+        currReportLevels = list(map(lambda x: int(x), reports[i].split(" ")))
+
+        reportInfo.levels = currReportLevels
+
+        # list of deltas
         deltaList = []
+        # list of whether each delta is safe
+        deltaIsSafeList = []
         unsafeDeltas = 0
-        #ignore the start and the end elements, 
-        for j in range(len(reports[i]) - 1):
-            delta = int(reports[i][j]) - int(reports[i][j+1])
 
-            if (delta == 0 or abs(delta) > 3):    
-                unsafeDeltas +=1
-                break
+        # ignore the end element, for checking j+1
+        for j in range(len(currReportLevels) - 1):
+            # for each delta
+            delta = int(currReportLevels[j]) - int(currReportLevels[j + 1])
+            isDeltaSafe = True
+            if delta == 0 or abs(delta) > 3:
+                unsafeDeltas += 1
+                isDeltaSafe = False
 
-           
-            if (len(deltaList)):
+            # not first delta
+            elif len(deltaList):
                 prevDelta = deltaList[-1]
 
                 # delta changed signs
-                if ((prevDelta > 0 and delta < 0) or 
-                    (prevDelta < 0 and delta > 0)):
-                    unsafeDeltas +=1
-                    break
-        
+                if ((prevDelta > 0 and delta < 0) or
+                        (prevDelta < 0 and delta > 0)):
+                    unsafeDeltas += 1
+                    isDeltaSafe = False
 
-            
             deltaList.append(delta)
-        if (unsafeDeltas == 0):
-            numSafe+=1
-        if (unsafeDeltas <= 1):
-            numAlmostSafe+=1
+            deltaIsSafeList.append(isDeltaSafe)
+
+        if unsafeDeltas == 0:
+            numSafe += 1
+            numAlmostSafe += 1
+
+        elif unsafeDeltas <= 2:
+            reportInfo.deltas = deltaList
+            reportInfo.isSafeDeltas = deltaIsSafeList
+            reportInfo.numSafe = len(deltaList) - unsafeDeltas
+            reportInfo.numNotSafe = unsafeDeltas
+
+            unsafeReports.append(reportInfo)
+            numAlmostSafe += 1
 
     print(numSafe)
     print(numAlmostSafe)
 
     # part 2
+    for report in unsafeReports:
+        print(report)
+
 
 if __name__ == "__main__":
     main()
