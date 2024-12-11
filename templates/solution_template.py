@@ -1,7 +1,8 @@
 import os
 
+
 def read_input():
-    input_file = os.path.join(os.path.dirname(__file__), 'input')
+    input_file = os.path.join(os.path.dirname(__file__), 'input.txt')
     try:
         with open(input_file, 'r') as file:
             return file.read()
@@ -9,11 +10,13 @@ def read_input():
         print(f"The file {input_file} was not found.")
         return None
 
+
 def main():
     print("Hello, World!")
     # part 1
-    
+
     # part 2
+
 
 if __name__ == "__main__":
     main()
